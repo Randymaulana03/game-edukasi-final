@@ -1,0 +1,98 @@
+/* 1. CONTAINER UTAMA & DEKLARASI WARNA SHADOW PER LEVEL */
+.stage {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.4)), 
+                    url('/images/cover.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+  font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+
+  /* Default Shadow (Level 1) */
+  --shadow-color: #b2e000;
+}
+
+/* Mengubah variabel warna shadow berdasarkan level */
+.stage.level-1 {
+  --shadow-color: #b2e000;
+}
+
+.stage.level-2 {
+  --shadow-color: #006699;
+}
+
+.stage.level-3 {
+  --shadow-color: #c70054;
+}
+
+/* 3. DESAIN PILL GENERAL (Box Shadow Menggunakan Variabel Dynamic) */
+.pill {
+  width: 90%;
+  border-radius: 999px;
+  line-height: 1 !important;
+  text-align: center;
+  margin-bottom: 16px;
+  z-index: 2;
+  box-shadow: 0 10px 0 var(--shadow-color), 0 14px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* 4. PILL LEVEL (Background Berubah Sesuai Level) */
+.pill.level {
+  max-width: 420px !important;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 900 !important;
+  font-style: normal !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+  padding: 18px 30px !important;
+}
+
+.stage.level-1 .pill.level {
+  background: var(--lime-neon, #ccff00) !important;
+  color: var(--text-purple, #4a0e78) !important;
+}
+
+.stage.level-2 .pill.level {
+  background: #0088cc !important;
+  color: #ffffff !important;
+}
+
+.stage.level-3 .pill.level {
+  background: #ff4081 !important;
+  color: #ffffff !important;
+}
+
+/* 5. PILL TOPIC (Background Putih, Shadow Otomatis Mengikut Variabel Level) */
+.pill.topic {
+  max-width: 680px !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-weight: 600 !important;
+  font-style: italic !important;
+  text-transform: none !important;
+  font-size: clamp(1rem, 3vw, 2.5rem) !important;
+  padding: 20px 36px !important;
+  background: #ffffff !important;
+  color: var(--text-purple, #4a0e78) !important;
+}
+
+/* 6. HINT / TIMER */
+.hint {
+  margin-top: 8px;
+  color: #ffffff;
+  font-family: "Trebuchet MS", "Comic Sans MS", sans-serif !important;
+  font-size: clamp(0.9rem, 2.2vw, 1rem) !important;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 16px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+}

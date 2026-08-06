@@ -1,0 +1,446 @@
+:root {
+  --panel: rgba(255, 255, 255, 0.55);
+  --panel-border: rgba(255, 255, 255, 0.75);
+  --ok: #00a34c;
+  --bad: #c50037;
+}
+
+.level3-body {
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.2)),
+    url("/images/lvl3.JPG.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.game-shell {
+  width: min(1100px, 100%);
+  background: var(--panel);
+  border: 2px solid var(--panel-border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+  animation: popIn 0.4s ease-out;
+}
+
+/* HEADER & TOMBOL BACK LEVEL 3 */
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.header h1 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: #8b1010;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 10px 18px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.home-btn-img {
+  position: absolute;
+  top: -9px;
+  right: 60px;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0 !important;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.back-img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.home-btn-img:hover {
+  transform: scale(1.12) rotate(-5deg) !important;
+}
+
+.home-btn-img:active {
+  transform: scale(0.95) !important;
+}
+
+/* LAYOUT UTAMA */
+.layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* PANEL KIRI: Fixed 320px */
+.left {
+  flex: 0 0 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left .target-image {
+  width: 320px;
+  height: 320px;
+  border-radius: 20px;
+  overflow: hidden;
+  /* background: #ffffff; */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left .target-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 16px;
+}
+
+/* PANEL KANAN: Responsive / Fleksibel */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-width: 0;
+}
+
+.letters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* TOMBOL HURUF (FIXED ASPECT RATIO & SIZE) */
+.letters .letter-btn {
+  width: 64px !important;
+  height: 64px !important;
+  flex: 0 0 64px !important; /* MENCEGAH HURUF MELEBAR DIPAKSA */
+  
+  pointer-events: auto;
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border: none !important;
+  border-radius: 14px !important;
+  
+  background-color: #f3c24c !important;
+  background-image: linear-gradient(135deg, #f3c24c 0%, #d89342 100%) !important;
+  color: #7f1c0f !important;
+  
+  font-weight: 900 !important;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem) !important;
+  cursor: grab !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18) !important;
+  transition: transform 0.12s ease, opacity 0.12s ease !important;
+  opacity: 1 !important;
+}
+
+.letters .letter-btn:hover {
+  transform: translateY(-2px) scale(1.03) !important;
+  opacity: 0.95 !important;
+}
+
+.letters .letter-btn.dragging {
+  pointer-events: none !important;
+  opacity: 0.4 !important;
+  cursor: grabbing !important;
+  transform: scale(1.1) translateY(-4px) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important;
+  z-index: 10 !important;
+}
+
+.feedback {
+  min-height: 30px;
+  text-align: center;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 800;
+}
+
+.feedback.ok {
+  color: var(--ok);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.controls .btn {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 11px 16px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #64390c !important;
+  opacity: 1 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.15s ease, opacity 0.15s ease !important;
+}
+
+.controls .btn-large {
+  padding: 14px 24px !important;
+  font-size: 1.05rem !important;
+}
+
+.controls .btn:hover {
+  transform: translateY(-1px) !important;
+  opacity: 0.9 !important;
+}
+
+.notification-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+  box-shadow: none;
+  animation: notifyPop 0.3s ease-out;
+}
+
+.notification-box.correct,
+.notification-box.incorrect {
+  background: transparent;
+  box-shadow: none;
+}
+
+.success-video {
+  width: 100%;
+  max-width: 85vw;
+  max-height: 85vh;
+  object-fit: cover;
+  border-radius: 24px;
+  overflow: hidden;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  margin: 0 auto;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE LAYOUT (UNTUK TABLET / HP) */
+@media (max-width: 900px) {
+  .home-btn-img {
+    right: 10px;
+  }
+  .layout {
+    flex-direction: column; /* Mengubah susunan ke bawah saat layar sempit */
+  }
+  .left {
+    flex: 0 0 auto;
+  }
+}
+
+/* OVERLAY & MODAL TUTORIAL */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(5px);
+}
+
+.tutorial-modal {
+  background: #ffffff;
+  border: 4px solid #f3c24c;
+  border-radius: 28px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 95vw;
+  width: 720px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.3s ease-out;
+}
+
+.tutorial-modal h2 {
+  margin: 0;
+  color: #7f1c0f;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  text-align: center;
+}
+
+.tutorial-video-wrapper {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: #000;
+}
+
+.tutorial-video {
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  display: block;
+}
+
+.btn-next-img {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 0 !important;
+  transition: transform 0.2s ease;
+}
+
+.btn-next-img:hover {
+  transform: scale(1.08);
+}
+
+.btn-next-img:active {
+  transform: scale(0.95);
+}
+
+.next-img {
+  width: 110px;
+  height: auto;
+  display: block;
+}
+
+/* ==========================================
+   END SCREEN FULLSCREEN STYLES (LEVEL 3)
+   ========================================== */
+
+/* Kontainer Full Screen Mengisi Seluruh Latar */
+.end-screen-fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 24px;
+  box-sizing: border-box;
+  animation: popIn 0.4s ease-out;
+}
+
+/* Gambar Banner End Screen Utama */
+.end-banner-img-full {
+  border-radius: 24px;
+  width: auto;
+  max-width: 85vw;
+  max-height: 55vh;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.3));
+  animation: floatAnim 3s ease-in-out infinite;
+}
+
+/* Container Tombol */
+.end-actions-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+/* Tombol Transparan */
+.end-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 0 !important;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+}
+
+.end-btn:hover {
+  transform: scale(1.15) rotate(-4deg);
+  filter: brightness(1.1);
+}
+
+.end-btn:active {
+  transform: scale(0.92) rotate(0deg);
+}
+
+/* Ukuran Icon Tombol Kembali & Replay */
+.end-btn-icon {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+}
+
+/* Animasi Floating Halus untuk Gambar Utama */
+@keyframes floatAnim {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Penyesuaian Layar Kecil (HP / Mobile) */
+@media (max-width: 600px) {
+  .end-screen-fullscreen {
+    gap: 20px;
+  }
+
+  .end-banner-img-full {
+    max-width: 90vw;
+    max-height: 45vh;
+  }
+
+  .end-btn-icon {
+    width: 72px;
+    height: 72px;
+  }
+}
