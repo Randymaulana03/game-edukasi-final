@@ -1,16 +1,42 @@
-# React + Vite
+# gameEdukasiInteraktif
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Deskripsi Game
 
-Currently, two official plugins are available:
+`gameEdukasiInteraktif` adalah permainan edukasi untuk anak usia dini yang membantu mengenal huruf, membentuk kata, dan menyusun kembali huruf yang teracak. Setiap huruf memiliki suara pengucapan, sehingga anak tidak hanya melihat bentuk huruf tetapi juga mendengar bunyinya.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Mekanisme Level
 
-## React Compiler
+1. Level 1 - Mengenal Huruf
+   - Anak dapat menekan huruf A sampai Z.
+   - Setiap huruf memicu suara pengucapan huruf tersebut.
+   - Tujuan: membiasakan anak mengenali huruf dan bunyi masing-masing.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. Level 2 - Menyusun Kata
+   - Anak menarik garis dari satu huruf ke huruf berikutnya untuk membentuk kata.
+   - Aplikasi memeriksa apakah kata yang dibentuk sudah benar.
+   - Suara huruf tetap aktif dan akan diputar saat kata disusun.
 
-## Expanding the ESLint configuration
+3. Level 3 - Menyusun Ulang Huruf
+   - Anak merapikan kembali kata yang huruf-hurufnya diacak dengan menukar posisi huruf.
+   - Permainan mengecek apakah hasilnya sudah sama dengan kata target.
+   - Suara huruf tetap membantu pada setiap interaksi huruf.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Perbaikan dan Kebersihan Kode
+
+- Semua logika inti ditempatkan di folder `core/`.
+- Redundansi audio dan validasi kata telah disederhanakan.
+- `AudioManager` sekarang menggunakan `preload: false` untuk mengurangi beban awal dan mendukung lazy loading audio.
+- `WordValidator` menggunakan daftar kata terpusat dari file data dan daftar level, agar validasi tetap konsisten.
+- Halaman level menggunakan modul `core/` untuk meminimalkan duplikasi kode.
+
+## Struktur Folder
+
+- `core/` - logika utama permainan dan audio.
+- `data/` - definisi huruf dan kumpulan kata.
+- `assets/audio/` - aset suara huruf dan efek.
+- `PAGE/` - halaman permainan level dan dashboard.
+
+## Catatan Pengembangan
+
+- Pastikan halaman yang memerlukan audio memuat `Howler.js`.
+- Untuk meningkatkan performa lebih lanjut, aset gambar dan audio bisa dikompresi atau dimuat secara selektif.
