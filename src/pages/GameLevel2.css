@@ -3,7 +3,40 @@
   --panel-border: rgba(255, 255, 255, 0.75);
 }
 
-/* HEADER & TOMBOL BACK LEVEL 2 */
+/* ============================================================
+   1. LAYOUT BODY & CONTAINER
+   ============================================================ */
+.level2-body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.18)), url("/images/BG_level1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.game-container {
+  width: min(1200px, 100%);
+  background: var(--panel);
+  border: 2px solid var(--panel-border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.3s ease-out;
+  contain: content; /* Isolasi rendering untuk meningkatkan performa layout */
+}
+
+/* ============================================================
+   2. HEADER & TOMBOL BACK
+   ============================================================ */
 .top-bar {
   position: relative;
   display: flex;
@@ -23,50 +56,25 @@
   cursor: pointer;
   z-index: 10;
   padding: 0 !important;
+  will-change: transform;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
-/* OPTIMASI: Ganti drop-shadow dengan box-shadow/opacity biasa */
 .back-img {
   display: block;
   width: 80px;
   height: 80px;
   object-fit: contain;
-  transition: transform 0.2s ease;
 }
 
-.home-btn-img:hover {
-  transform: scale(1.12) rotate(-5deg) !important;
+@media (hover: hover) {
+  .home-btn-img:hover {
+    transform: scale(1.08) rotate(-3deg) !important;
+  }
 }
 
 .home-btn-img:active {
   transform: scale(0.95) !important;
-}
-
-/* OPTIMASI: Hapus background-attachment: fixed */
-.level2-body {
-  min-height: 100vh;
-  font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.18)), url("/images/BG_level1.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  touch-action: none;
-}
-
-/* OPTIMASI: Hapus backdrop-filter: blur(), ganti background lebih solid */
-.game-container {
-  width: min(1200px, 100%);
-  background: var(--panel);
-  border: 2px solid var(--panel-border);
-  border-radius: 28px;
-  padding: 24px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
-  animation: fadeIn 0.4s ease-out;
 }
 
 .game-header {
@@ -83,6 +91,9 @@
   display: inline-block;
 }
 
+/* ============================================================
+   3. GAME CONTENT & GRID SYSTEM
+   ============================================================ */
 .game-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -101,7 +112,13 @@
   gap: 12px;
 }
 
-/* OPTIMASI: Hapus will-change static, ganti filter brightness ke opacity */
+.grid-container .letter {
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
 .letter {
   width: 100%;
   aspect-ratio: 1;
@@ -115,14 +132,16 @@
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 900;
   cursor: pointer;
+  will-change: transform;
   transition: transform 0.12s ease, opacity 0.12s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  user-select: none;
 }
 
-.letter:hover {
-  transform: scale(1.04);
-  opacity: 0.95;
+@media (hover: hover) {
+  .letter:hover {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
 }
 
 .letter.active {
@@ -133,16 +152,18 @@
 
 .letter.correct {
   background: linear-gradient(135deg, #00D4FF 0%, #0099FF 100%);
-  animation: correctPulse 0.5s ease-out;
+  animation: correctPulse 0.4s ease-out;
 }
 
 @keyframes correctPulse {
   0% { transform: scale(1.08); }
-  50% { transform: scale(1.15); }
+  50% { transform: scale(1.14); }
   100% { transform: scale(1.08); }
 }
 
-/* OPTIMASI: Hapus backdrop-filter */
+/* ============================================================
+   4. PANEL KANAN & KONTROL
+   ============================================================ */
 .right-panel {
   display: flex;
   flex-direction: column;
@@ -160,7 +181,6 @@
   width: 100%;
   max-width: 280px;
   aspect-ratio: 1 / 1;
-  /* background: rgba(200, 150, 100, 0.3); */
   border-radius: 12px;
   display: flex;
   justify-content: center;
@@ -216,21 +236,54 @@
   border-radius: 12px;
   cursor: pointer;
   font-weight: 700;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  will-change: transform;
+  transition: transform 0.15s ease, opacity 0.15s ease;
   background: rgba(255, 255, 255, 0.9);
   color: #5c3900;
+  touch-action: manipulation;
 }
 
-.btn-action:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
+@media (hover: hover) {
+  .btn-action:hover {
+    transform: translate3d(0, -2px, 0);
+    opacity: 0.95;
+  }
 }
 
-.btn-next {
-  background: rgba(0, 150, 255, 0.9);
-  color: white;
+.btn-next-img {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  will-change: transform;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  touch-action: manipulation;
 }
 
+.next-img {
+  display: block;
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+}
+
+@media (hover: hover) {
+  .btn-next-img:hover {
+    transform: scale(1.06) translate3d(0, -2px, 0) !important;
+  }
+}
+
+.btn-next-img:active {
+  transform: scale(0.95) !important;
+}
+
+/* ============================================================
+   5. CANVAS & ANIMATED OVERLAYS
+   ============================================================ */
 #lineCanvas {
   position: fixed;
   top: 0;
@@ -244,128 +297,40 @@
   z-index: 10;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== NOTIFICATION MODAL ===== */
+/* NOTIFICATION & TUTORIAL OVERLAY (Hapus Backdrop Blur untuk Akselerasi Performa) */
 .notification-overlay {
   position: fixed;
   inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.72);
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.2s ease-out;
 }
-/* Mencegah layar tergulung / zoom saat menggeser jari di tombol huruf */
-.grid-container .letter {
-  touch-action: none !important;
-  -webkit-touch-callout: none !important;
-  -webkit-user-select: none !important;
-  user-select: none !important;
-}
-/* Biarkan box hanya sebagai pembungkus presisi seukuran video */
+
 .notification-box {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
-  width: auto; /* Hapus width 1200px */
+  width: auto;
   height: auto;
   background: transparent;
   box-shadow: none;
-  animation: notifyPop 0.3s ease-out;
+  animation: notifyPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.notification-box.correct,
-.notification-box.incorrect {
-  background: transparent;
-  box-shadow: none;
-}
-
-/* Samakan ukuran dan paksa clipping border-radius pada kedua video */
 .success-video, 
 .fail-video {
-  /* 1. KUNCI UKURAN SAMA UTK KEDUANYA */
-  width: 100%;           /* Sesuaikan ukuran layar modal yang diinginkan */
-  /* max-height: 80vh;           */
   max-width: 85vw;
   max-height: 85vh;
-  
-  /* 2. PAKSA ISI PENUH TANPA SISA RUANG */
   object-fit: cover;
-  
-  /* 3. BORDER RADIUS & CLIPPING BROWSER */
   border-radius: 24px;
   overflow: hidden;
-  
-  /* Hack wajib agar Chrome/Safari mau memotong ujung video HTML5 */
   transform: translateZ(0);
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  mask-image: radial-gradient(white, black);
-  
-  /* Optional: Tambah shadow/border putih melayang agar bagus */
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-  /* border: 3px solid rgba(255, 255, 255, 0.8); */
   margin: 0 auto;
-}
-
-@keyframes notifyPop {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@media (max-width: 900px) {
-  .game-content { grid-template-columns: 1fr; gap: 20px; }
-  .right-panel { min-height: 250px; }
-}
-
-/* TOMBOL NEXT DENGAN GAMBAR */
-.btn-next-img {
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  cursor: pointer !important;
-  box-shadow: none !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-}
-
-.next-img {
-  display: block;
-  width: auto;
-  height: 60px; /* Adjust tinggi sesuai kebutuhan UI */
-  object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-}
-
-.btn-next-img:hover {
-  transform: scale(1.08) translateY(-2px) !important;
-}
-
-.btn-next-img:active {
-  transform: scale(0.95) !important;
-}
-
-
-/* OVERLAY & MODAL TUTORIAL LEVEL 2 */
-.notification-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  backdrop-filter: blur(5px);
 }
 
 .tutorial-modal {
@@ -380,7 +345,7 @@
   max-width: 95vw;
   width: 720px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  animation: popIn 0.3s ease-out;
+  animation: notifyPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .tutorial-modal h2 {
@@ -394,7 +359,6 @@
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   background: #000;
 }
 
@@ -405,35 +369,20 @@
   display: block;
 }
 
-.btn-next-img {
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer;
-  padding: 0 !important;
-  transition: transform 0.2s ease;
+/* KEYFRAMES (GPU ACCELERATED) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.btn-next-img:hover {
-  transform: scale(1.08);
+@keyframes notifyPop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.btn-next-img:active {
-  transform: scale(0.95);
-}
-
-.next-img {
-  width: 110px;
-  height: auto;
-  display: block;
-}
-
-@keyframes popIn {
-  from {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+/* RESPONSIVE DESIGN */
+@media (max-width: 900px) {
+  .game-content { grid-template-columns: 1fr; gap: 20px; }
+  .right-panel { min-height: 250px; }
+  .home-btn-img { right: 15px; }
 }
