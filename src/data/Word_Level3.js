@@ -3,8 +3,8 @@ const FILLER_LETTERS = Array.from("BCDEFGHIJKLMOPQRSTUVWXYZ");
 
 // Bank Soal Level 3 (Freezed untuk mencegah mutasi runtime)
 export const wordsLevel3 = Object.freeze([
-  { id: 1, label: "Nanas", answer: "NANAS", image: "/images/nanas.png" },
-  { id: 2, label: "Okra", answer: "OKRA", image: "/images/okra.png" },
+  { id: 1, label: "Durian", answer: "DURIAN", image: "/images/durian.png" },
+  { id: 2, label: "Nanas", answer: "NANAS", image: "/images/nanas.png" },
   { id: 3, label: "Pepaya", answer: "PEPAYA", image: "/images/pepaya.png" },
   { id: 4, label: "Rambutan", answer: "RAMBUTAN", image: "/images/rambutan.png" },
   { id: 5, label: "Sirsak", answer: "SIRSAK", image: "/images/sirsak.png" },
