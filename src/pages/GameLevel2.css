@@ -260,7 +260,13 @@
   z-index: 1000;
   animation: fadeIn 0.2s ease;
 }
-
+/* Mencegah layar tergulung / zoom saat menggeser jari di tombol huruf */
+.grid-container .letter {
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
 /* Biarkan box hanya sebagai pembungkus presisi seukuran video */
 .notification-box {
   display: flex;

@@ -117,31 +117,43 @@
   padding: 16px;
 }
 
-/* PANEL KANAN: Responsive / Fleksibel */
+/* PANEL KANAN */
 .right {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: center;    /* Tengah horizontal */
+  justify-content: center; /* Tengah vertikal */
   gap: 24px;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* CONTAINER HURUF: Tempat tombol huruf berjejer 1 baris */
 .letters {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: nowrap !important; /* Paksa 1 baris */
+  justify-content: center !important; /* Susun di tengah */
+  align-items: center !important; /* KUNCI: Mencegah tombol ditarik tinggi memanjang */
   gap: 12px;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
-
-/* TOMBOL HURUF (FIXED ASPECT RATIO & SIZE) */
+/* TOMBOL HURUF PERSEGI SAMA SISI */
 .letters .letter-btn {
-  width: 64px !important;
-  height: 64px !important;
-  flex: 0 0 64px !important; /* MENCEGAH HURUF MELEBAR DIPAKSA */
+  /* Hilangkan height fixed bawaan */
+  height: auto !important;
+  min-height: 0 !important;
+  
+  /* Gunakan aspect-ratio 1:1 agar lebar dan tinggi selalu sama persis */
+  aspect-ratio: 1 / 1 !important;
+  
+  /* Flexbox untuk lebar proporsional */
+  flex: 1 1 0px !important;
+  min-width: 0 !important;
+  max-width: 100px !important; /* Lebar/tinggi maksimal jika huruf sedikit */
   
   pointer-events: auto;
   touch-action: none !important;
@@ -160,7 +172,7 @@
   color: #7f1c0f !important;
   
   font-weight: 900 !important;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem) !important;
+  font-size: clamp(0.8rem, 3vw, 1.8rem) !important;
   cursor: grab !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18) !important;
   transition: transform 0.12s ease, opacity 0.12s ease !important;
@@ -348,7 +360,7 @@
 }
 
 .next-img {
-  width: 110px;
+  width: 80px;
   height: auto;
   display: block;
 }

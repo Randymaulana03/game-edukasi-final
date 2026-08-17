@@ -118,41 +118,68 @@ export default function GameLevel2({ onNextLevel, onBackToDashboard, onFinishLev
     );
   };
 
-  const handleMouseDown = (letter, index) => {
+  /* ==========================================================
+     POINTER HANDLERS (Mendukung Touch / Drag HP & Mouse PC)
+     ========================================================== */
+  const handlePointerDown = (e, letter, index) => {
     if (isAnsweredRef.current) return;
+    if (e.button !== undefined && e.button !== 0) return; // Hanya klik kiri / touch
+
     isDraggingRef.current = true;
     lastIndexRef.current = index;
 
     startWord(letter);
     setSelectedIndices([index]);
     setFeedback({ text: '', type: '' });
+
+    if (e.target.setPointerCapture) {
+      try {
+        e.target.setPointerCapture(e.pointerId);
+      } catch (err) {
+        // Abaikan error capture jika ada
+      }
+    }
   };
 
-  const handleMouseEnter = (letter, index) => {
+  const handlePointerMove = (e) => {
     if (!isDraggingRef.current || isAnsweredRef.current) return;
-    if (lastIndexRef.current === index) return;
 
-    if (lastIndexRef.current !== null && !isValidMove(lastIndexRef.current, index)) {
-      return;
-    }
+    // Mendapatkan elemen di bawah kursor / ujung jari
+    const targetElement = document.elementFromPoint(e.clientX, e.clientY);
+    const letterBtn = targetElement?.closest('.letter');
 
-    const correct = addLetter(letter);
-    drawLine(lastIndexRef.current, index);
+    if (letterBtn) {
+      const index = Number(letterBtn.getAttribute('data-index'));
+      const letter = letterBtn.getAttribute('data-letter');
 
-    setSelectedIndices((prev) => [...prev, index]);
-    lastIndexRef.current = index;
+      if (!isNaN(index) && lastIndexRef.current !== index) {
+        // Cek validasi gerakan antar sel
+        if (lastIndexRef.current !== null && !isValidMove(lastIndexRef.current, index)) {
+          return;
+        }
 
-    if (correct) {
-      isAnsweredRef.current = true;
-      setIsWordCorrect(true);
-      isDraggingRef.current = false;
+        // Jangan masukkan jika indeks huruf sudah terpilih
+        if (selectedIndices.includes(index)) return;
 
-      triggerNotification(true);
-      playCorrectSound();
+        const correct = addLetter(letter);
+        drawLine(lastIndexRef.current, index);
+
+        setSelectedIndices((prev) => [...prev, index]);
+        lastIndexRef.current = index;
+
+        if (correct) {
+          isAnsweredRef.current = true;
+          setIsWordCorrect(true);
+          isDraggingRef.current = false;
+
+          triggerNotification(true);
+          playCorrectSound();
+        }
+      }
     }
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
 
@@ -175,7 +202,6 @@ export default function GameLevel2({ onNextLevel, onBackToDashboard, onFinishLev
     if (currentQuestionIdx + 1 < QUESTION_BANK.length) {
       setCurrentQuestionIdx((prev) => prev + 1);
     } else {
-      // Kata sudah habis -> Panggil handler untuk pindah ke Level 3
       if (onFinishLevel) {
         onFinishLevel();
       }
@@ -183,7 +209,12 @@ export default function GameLevel2({ onNextLevel, onBackToDashboard, onFinishLev
   };
 
   return (
-    <div className="level2-body" onMouseUp={handleMouseUp}>
+    <div 
+      className="level2-body" 
+      onPointerMove={handlePointerMove} 
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
       <canvas
         ref={canvasRef}
         id="lineCanvas"
@@ -222,11 +253,12 @@ export default function GameLevel2({ onNextLevel, onBackToDashboard, onFinishLev
                 return (
                   <button
                     key={idx}
+                    data-index={idx}
+                    data-letter={char}
                     ref={(el) => (letterRefs.current[idx] = el)}
                     type="button"
                     className={`letter ${isSelected ? 'active' : ''} ${isSelected && isWordCorrect ? 'correct' : ''}`}
-                    onMouseDown={() => handleMouseDown(char, idx)}
-                    onMouseEnter={() => handleMouseEnter(char, idx)}
+                    onPointerDown={(e) => handlePointerDown(e, char, idx)}
                   >
                     {char}
                   </button>

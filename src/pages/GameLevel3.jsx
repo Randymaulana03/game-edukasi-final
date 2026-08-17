@@ -198,7 +198,7 @@ if (isFinished) {
                     </div>
 
                     <div className="right">
-                        <div className="letters">
+                        <div className="letters" >
                             {currentOrder.map((letter, idx) => (
                                 <button
                                     key={idx}
