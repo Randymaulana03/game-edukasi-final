@@ -5,8 +5,12 @@
   --bad: #c50037;
 }
 
+/* ============================================================
+   1. LAYOUT BODY & CONTAINER UTAMA
+   ============================================================ */
 .level3-body {
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
   background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.2)),
     url("/images/lvl3.JPG.jpeg");
@@ -18,6 +22,9 @@
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .game-shell {
@@ -27,10 +34,13 @@
   border-radius: 28px;
   padding: 24px;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
-  animation: popIn 0.4s ease-out;
+  animation: popIn 0.3s ease-out;
+  contain: content; /* Isolasi scope layout untuk performa tinggi */
 }
 
-/* HEADER & TOMBOL BACK LEVEL 3 */
+/* ============================================================
+   2. HEADER & NAVIGATION
+   ============================================================ */
 .header {
   position: relative;
   display: flex;
@@ -59,7 +69,9 @@
   cursor: pointer;
   z-index: 10;
   padding: 0 !important;
+  will-change: transform;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  touch-action: manipulation;
 }
 
 .back-img {
@@ -67,18 +79,21 @@
   width: 80px;
   height: 80px;
   object-fit: contain;
-  transition: transform 0.2s ease;
 }
 
-.home-btn-img:hover {
-  transform: scale(1.12) rotate(-5deg) !important;
+@media (hover: hover) {
+  .home-btn-img:hover {
+    transform: scale(1.12) rotate(-5deg) !important;
+  }
 }
 
 .home-btn-img:active {
   transform: scale(0.95) !important;
 }
 
-/* LAYOUT UTAMA */
+/* ============================================================
+   3. LAYOUT LEVEL 3 (PANEL KIRI & KANAN)
+   ============================================================ */
 .layout {
   display: flex;
   flex-direction: row;
@@ -90,7 +105,7 @@
   margin: 0 auto;
 }
 
-/* PANEL KIRI: Fixed 320px */
+/* PANEL KIRI */
 .left {
   flex: 0 0 320px;
   display: flex;
@@ -103,7 +118,6 @@
   height: 320px;
   border-radius: 20px;
   overflow: hidden;
-  /* background: #ffffff; */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: center;
@@ -122,38 +136,35 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;    /* Tengah horizontal */
-  justify-content: center; /* Tengah vertikal */
+  align-items: center;
+  justify-content: center;
   gap: 24px;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* CONTAINER HURUF: Tempat tombol huruf berjejer 1 baris */
+/* ============================================================
+   4. INTERACTIVE LETTER BUTTONS & CONTROLS
+   ============================================================ */
 .letters {
   display: flex;
-  flex-wrap: nowrap !important; /* Paksa 1 baris */
-  justify-content: center !important; /* Susun di tengah */
-  align-items: center !important; /* KUNCI: Mencegah tombol ditarik tinggi memanjang */
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
   gap: 12px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
-/* TOMBOL HURUF PERSEGI SAMA SISI */
+
 .letters .letter-btn {
-  /* Hilangkan height fixed bawaan */
   height: auto !important;
   min-height: 0 !important;
-  
-  /* Gunakan aspect-ratio 1:1 agar lebar dan tinggi selalu sama persis */
   aspect-ratio: 1 / 1 !important;
-  
-  /* Flexbox untuk lebar proporsional */
   flex: 1 1 0px !important;
   min-width: 0 !important;
-  max-width: 100px !important; /* Lebar/tinggi maksimal jika huruf sedikit */
+  max-width: 100px !important;
   
   pointer-events: auto;
   touch-action: none !important;
@@ -175,20 +186,23 @@
   font-size: clamp(0.8rem, 3vw, 1.8rem) !important;
   cursor: grab !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18) !important;
+  will-change: transform, opacity;
   transition: transform 0.12s ease, opacity 0.12s ease !important;
   opacity: 1 !important;
 }
 
-.letters .letter-btn:hover {
-  transform: translateY(-2px) scale(1.03) !important;
-  opacity: 0.95 !important;
+@media (hover: hover) {
+  .letters .letter-btn:hover {
+    transform: translate3d(0, -2px, 0) scale(1.03) !important;
+    opacity: 0.95 !important;
+  }
 }
 
 .letters .letter-btn.dragging {
   pointer-events: none !important;
   opacity: 0.4 !important;
   cursor: grabbing !important;
-  transform: scale(1.1) translateY(-4px) !important;
+  transform: scale(1.1) translate3d(0, -4px, 0) !important;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important;
   z-index: 10 !important;
 }
@@ -222,7 +236,9 @@
   color: #64390c !important;
   opacity: 1 !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  will-change: transform;
   transition: transform 0.15s ease, opacity 0.15s ease !important;
+  touch-action: manipulation;
 }
 
 .controls .btn-large {
@@ -230,9 +246,54 @@
   font-size: 1.05rem !important;
 }
 
-.controls .btn:hover {
-  transform: translateY(-1px) !important;
-  opacity: 0.9 !important;
+@media (hover: hover) {
+  .controls .btn:hover {
+    transform: translate3d(0, -1px, 0) !important;
+    opacity: 0.9 !important;
+  }
+}
+
+.btn-next-img {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 0 !important;
+  will-change: transform;
+  transition: transform 0.2s ease;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .btn-next-img:hover {
+    transform: scale(1.08);
+  }
+}
+
+.btn-next-img:active {
+  transform: scale(0.95);
+}
+
+.next-img {
+  width: 80px;
+  height: auto;
+  display: block;
+}
+
+/* ============================================================
+   5. OVERLAYS, MODALS & VIDEOS
+   ============================================================ */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.72);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
 }
 
 .notification-box {
@@ -244,7 +305,7 @@
   height: auto;
   background: transparent;
   box-shadow: none;
-  animation: notifyPop 0.3s ease-out;
+  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .notification-box.correct,
@@ -261,49 +322,8 @@
   border-radius: 24px;
   overflow: hidden;
   transform: translateZ(0);
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  mask-image: radial-gradient(white, black);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
   margin: 0 auto;
-}
-
-@keyframes popIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* RESPONSIVE LAYOUT (UNTUK TABLET / HP) */
-@media (max-width: 900px) {
-  .home-btn-img {
-    right: 10px;
-  }
-  .layout {
-    flex-direction: column; /* Mengubah susunan ke bawah saat layar sempit */
-  }
-  .left {
-    flex: 0 0 auto;
-  }
-}
-
-/* OVERLAY & MODAL TUTORIAL */
-.notification-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  backdrop-filter: blur(5px);
 }
 
 .tutorial-modal {
@@ -318,7 +338,7 @@
   max-width: 95vw;
   width: 720px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  animation: popIn 0.3s ease-out;
+  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .tutorial-modal h2 {
@@ -343,33 +363,9 @@
   display: block;
 }
 
-.btn-next-img {
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer;
-  padding: 0 !important;
-  transition: transform 0.2s ease;
-}
-
-.btn-next-img:hover {
-  transform: scale(1.08);
-}
-
-.btn-next-img:active {
-  transform: scale(0.95);
-}
-
-.next-img {
-  width: 80px;
-  height: auto;
-  display: block;
-}
-
-/* ==========================================
-   END SCREEN FULLSCREEN STYLES (LEVEL 3)
-   ========================================== */
-
-/* Kontainer Full Screen Mengisi Seluruh Latar */
+/* ============================================================
+   6. END SCREEN FULLSCREEN
+   ============================================================ */
 .end-screen-fullscreen {
   display: flex;
   flex-direction: column;
@@ -378,13 +374,13 @@
   gap: 32px;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   margin: 0;
   padding: 24px;
   box-sizing: border-box;
-  animation: popIn 0.4s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
-/* Gambar Banner End Screen Utama */
 .end-banner-img-full {
   border-radius: 24px;
   width: auto;
@@ -392,10 +388,10 @@
   max-height: 55vh;
   object-fit: contain;
   filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.3));
+  will-change: transform;
   animation: floatAnim 3s ease-in-out infinite;
 }
 
-/* Container Tombol */
 .end-actions-full {
   display: flex;
   align-items: center;
@@ -403,26 +399,28 @@
   gap: 32px;
 }
 
-/* Tombol Transparan */
 .end-btn {
   background: transparent !important;
   border: none !important;
   cursor: pointer;
   padding: 0 !important;
   outline: none;
+  will-change: transform, filter;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+  touch-action: manipulation;
 }
 
-.end-btn:hover {
-  transform: scale(1.15) rotate(-4deg);
-  filter: brightness(1.1);
+@media (hover: hover) {
+  .end-btn:hover {
+    transform: scale(1.15) rotate(-4deg);
+    filter: brightness(1.1);
+  }
 }
 
 .end-btn:active {
   transform: scale(0.92) rotate(0deg);
 }
 
-/* Ukuran Icon Tombol Kembali & Replay */
 .end-btn-icon {
   width: 90px;
   height: 90px;
@@ -430,17 +428,46 @@
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
 }
 
-/* Animasi Floating Halus untuk Gambar Utama */
-@keyframes floatAnim {
-  0%, 100% {
-    transform: translateY(0);
+/* ============================================================
+   7. ANIMATIONS & MEDIA QUERIES
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
   }
-  50% {
-    transform: translateY(-10px);
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
-/* Penyesuaian Layar Kecil (HP / Mobile) */
+@keyframes floatAnim {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .home-btn-img {
+    right: 15px;
+  }
+  .layout {
+    flex-direction: column;
+  }
+  .left {
+    flex: 0 0 auto;
+  }
+}
+
 @media (max-width: 600px) {
   .end-screen-fullscreen {
     gap: 20px;
