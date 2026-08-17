@@ -25,7 +25,7 @@ export default function Transition({ level, onFinish }) {
       </section>
 
       <section className="pill topic">
-        {level === 1 ? 'Mengenal Huruf' : level === 2 ? 'Menghubungkan Huruf' : 'Menyusun Kata'}
+        {level === 1 ? 'Mengenal Huruf' : level === 2 ? 'Menghubungkan Huruf' : 'Menyusun Huruf'}
       </section>
       
       <p className="hint">
