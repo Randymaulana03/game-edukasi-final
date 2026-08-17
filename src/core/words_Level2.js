@@ -1,6 +1,7 @@
-const FILLER_LETTERS = 'CEFGHIKLMNOPQRSTVWXYZ';
+// Filler Array Statis (Di-precalculate agar cepat)
+const FILLER_LETTERS = Array.from('CEFGHIKLMNOPQRSTVWXYZ');
 
-const ORIENTATION_GROUPS = {
+const ORIENTATION_GROUPS = Object.freeze({
   horizontal: [
     [0, 1],  // Kiri -> Kanan
     [0, -1]  // Kanan -> Kiri
@@ -12,9 +13,9 @@ const ORIENTATION_GROUPS = {
     [1, 1],  // ↘
     [1, -1]  // ↙
   ]
-};
+});
 
-export const wordsLevel2 = [
+export const wordsLevel2 = Object.freeze([
   { id: 1, label: 'Atap', answer: 'ATAP', image: '/images/atap.png', grid: { rows: 4, cols: 4 } },
   { id: 2, label: 'Baju', answer: 'BAJU', image: '/images/baju.png', grid: { rows: 4, cols: 4 } },
   { id: 3, label: 'Cermin', answer: 'CERMIN', image: '/images/cermin.png', grid: { rows: 6, cols: 6 } },
@@ -29,7 +30,7 @@ export const wordsLevel2 = [
   { id: 12, label: 'Xilofon', answer: 'XILOFON', image: '/images/xilofon.png', grid: { rows: 7, cols: 7 } },
   { id: 13, label: 'Yoyo', answer: 'YOYO', image: '/images/yoyo.png', grid: { rows: 4, cols: 4 } },
   { id: 14, label: 'Quran', answer: 'QURAN', image: '/images/quran.png', grid: { rows: 5, cols: 5 } },
-];
+]);
 
 function randomInt(max) {
   return Math.floor(Math.random() * max);
@@ -40,7 +41,11 @@ function pickRandom(arr) {
 }
 
 function createEmptyMatrix(rows, cols) {
-  return Array.from({ length: rows }, () => Array(cols).fill(''));
+  const matrix = new Array(rows);
+  for (let r = 0; r < rows; r++) {
+    matrix[r] = new Array(cols).fill('');
+  }
+  return matrix;
 }
 
 function isWithinBounds(row, col, rows, cols) {
@@ -49,11 +54,15 @@ function isWithinBounds(row, col, rows, cols) {
 
 function getValidStarts(length, dr, dc, rows, cols) {
   const starts = [];
+  const maxEndRow = rows - 1;
+  const maxEndCol = cols - 1;
+
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const endRow = row + dr * (length - 1);
       const endCol = col + dc * (length - 1);
-      if (isWithinBounds(endRow, endCol, rows, cols)) {
+
+      if (endRow >= 0 && endRow <= maxEndRow && endCol >= 0 && endCol <= maxEndCol) {
         starts.push([row, col]);
       }
     }
@@ -62,10 +71,11 @@ function getValidStarts(length, dr, dc, rows, cols) {
 }
 
 function fillRandomLetters(matrix, rows, cols) {
+  const fillerLen = FILLER_LETTERS.length;
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (!matrix[row][col]) {
-        matrix[row][col] = FILLER_LETTERS[randomInt(FILLER_LETTERS.length)];
+        matrix[row][col] = FILLER_LETTERS[Math.floor(Math.random() * fillerLen)];
       }
     }
   }
@@ -73,13 +83,17 @@ function fillRandomLetters(matrix, rows, cols) {
 
 function getValidDirectionPool(length, rows, cols) {
   const pool = [];
-  Object.entries(ORIENTATION_GROUPS).forEach(([orientationName, directions]) => {
-    directions.forEach(([dr, dc]) => {
+  const entries = Object.entries(ORIENTATION_GROUPS);
+
+  for (let i = 0; i < entries.length; i++) {
+    const [orientationName, directions] = entries[i];
+    for (let j = 0; j < directions.length; j++) {
+      const [dr, dc] = directions[j];
       if (getValidStarts(length, dr, dc, rows, cols).length > 0) {
         pool.push({ orientationName, dr, dc });
       }
-    });
-  });
+    }
+  }
   return pool;
 }
 

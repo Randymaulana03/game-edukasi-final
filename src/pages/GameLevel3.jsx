@@ -7,21 +7,32 @@ import './GameLevel3.css';
 export default function GameLevel3({ onFinishGame, onBackToDashboard }) {
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [currentOrder, setCurrentOrder] = useState([]);
-    const [initialLetters, setInitialLettersState] = useState([]);
     const [isWordCorrect, setIsWordCorrect] = useState(false);
     const [feedback, setFeedback] = useState({ text: '', type: '' });
     const [notification, setNotification] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
 
-    // State untuk Pop-up Tutorial
+    // State & Ref
     const [showTutorial, setShowTutorial] = useState(true);
-
     const [draggedIdx, setDraggedIdx] = useState(null);
+
+    const initialLettersRef = useRef([]);
     const activePointerIdRef = useRef(null);
     const dragStartIdxRef = useRef(null);
+    const notificationTimerRef = useRef(null);
 
     const currentQuestion = QUESTION_BANK[currentQuestionIdx];
 
+    // Cleanup Timer Notifikasi saat Komponen Unmount
+    useEffect(() => {
+        return () => {
+            if (notificationTimerRef.current) {
+                clearTimeout(notificationTimerRef.current);
+            }
+        };
+    }, []);
+
+    // Load Soal Berdasarkan Index
     const loadQuestion = useCallback((index) => {
         setIsWordCorrect(false);
         setFeedback({ text: '', type: '' });
@@ -30,7 +41,7 @@ export default function GameLevel3({ onFinishGame, onBackToDashboard }) {
         const q = QUESTION_BANK[index];
         if (q) {
             const letters = buildLevel3Letters(q.answer);
-            setInitialLettersState(letters);
+            initialLettersRef.current = letters;
             setCurrentOrder(letters);
             setInitialLetters(letters);
         }
@@ -40,38 +51,47 @@ export default function GameLevel3({ onFinishGame, onBackToDashboard }) {
         loadQuestion(currentQuestionIdx);
     }, [currentQuestionIdx, loadQuestion]);
 
-    const triggerNotification = () => {
+    // Trigger Pop-up Notifikasi & Suara Benar
+    const triggerNotification = useCallback(() => {
         setNotification(true);
         try {
             playCorrectSound();
         } catch (err) {
-            console.log('Audio play blocked:', err);
+            console.warn('Audio play blocked:', err);
         }
 
-        setTimeout(() => {
+        if (notificationTimerRef.current) {
+            clearTimeout(notificationTimerRef.current);
+        }
+
+        notificationTimerRef.current = setTimeout(() => {
             setNotification(false);
         }, 2500);
-    };
+    }, []);
 
-    const swapLetters = (fromIdx, toIdx) => {
+    // Swap Posisi Huruf
+    const swapLetters = useCallback((fromIdx, toIdx) => {
         if (fromIdx === null || toIdx === null || fromIdx === toIdx) return;
 
-        const newOrder = [...currentOrder];
-        const temp = newOrder[fromIdx];
-        newOrder[fromIdx] = newOrder[toIdx];
-        newOrder[toIdx] = temp;
+        setCurrentOrder((prevOrder) => {
+            const newOrder = [...prevOrder];
+            const temp = newOrder[fromIdx];
+            newOrder[fromIdx] = newOrder[toIdx];
+            newOrder[toIdx] = temp;
 
-        setCurrentOrder(newOrder);
+            const isCorrect = updateArrangement(newOrder);
+            if (isCorrect) {
+                setIsWordCorrect(true);
+                setFeedback({ text: `${getCurrentWord()}`, type: 'ok' });
+                triggerNotification();
+            }
 
-        const isCorrect = updateArrangement(newOrder);
-        if (isCorrect) {
-            setIsWordCorrect(true);
-            setFeedback({ text: `${getCurrentWord()}`, type: 'ok' });
-            triggerNotification();
-        }
-    };
+            return newOrder;
+        });
+    }, [triggerNotification]);
 
-    const handlePointerDown = (e, index) => {
+    // Pointer Event Handlers untuk Drag and Drop / Touch
+    const handlePointerDown = useCallback((e, index) => {
         if (e.button !== undefined && e.button !== 0) return;
 
         activePointerIdRef.current = e.pointerId;
@@ -79,11 +99,15 @@ export default function GameLevel3({ onFinishGame, onBackToDashboard }) {
         setDraggedIdx(index);
 
         if (e.target.setPointerCapture) {
-            e.target.setPointerCapture(e.pointerId);
+            try {
+                e.target.setPointerCapture(e.pointerId);
+            } catch (err) {
+                // Ignore capture errors
+            }
         }
-    };
+    }, []);
 
-    const handlePointerUp = (e) => {
+    const handlePointerUp = useCallback((e) => {
         if (dragStartIdxRef.current === null) return;
 
         const targetElement = document.elementFromPoint(e.clientX, e.clientY);
@@ -107,74 +131,67 @@ export default function GameLevel3({ onFinishGame, onBackToDashboard }) {
         dragStartIdxRef.current = null;
         activePointerIdRef.current = null;
         setDraggedIdx(null);
-    };
+    }, [swapLetters]);
 
-    const handleReset = () => {
-        setCurrentOrder([...initialLetters]);
+    // Action Handlers
+    const handleReset = useCallback(() => {
+        const letters = initialLettersRef.current;
+        setCurrentOrder([...letters]);
         setIsWordCorrect(false);
         setFeedback({ text: '', type: '' });
-        setInitialLetters(initialLetters);
-    };
+        setInitialLetters(letters);
+    }, []);
 
-    const handleNext = () => {
-  if (currentQuestionIdx + 1 < QUESTION_BANK.length) {
-    // Jika masih ada kata berikutnya di Level 3
-    setCurrentQuestionIdx((prev) => prev + 1);
-  } else {
-    // Jika kata di Level 3 sudah habis -> tampilkan end screen
-    setIsFinished(true);
-    
-    // Opsi: Panggil callback jika App.jsx perlu tahu game sudah selesai
-    if (onFinishGame) {
-      onFinishGame();
-    }
-  }
-};
+    const handleNext = useCallback(() => {
+        if (currentQuestionIdx + 1 < QUESTION_BANK.length) {
+            setCurrentQuestionIdx((prev) => prev + 1);
+        } else {
+            setIsFinished(true);
+            if (onFinishGame) {
+                onFinishGame();
+            }
+        }
+    }, [currentQuestionIdx, onFinishGame]);
 
-    const handleRestart = () => {
+    const handleRestart = useCallback(() => {
         setCurrentQuestionIdx(0);
         setIsFinished(false);
-    };
+    }, []);
 
-    // 1. JIKA GAME SELESAI -> TAMPILKAN END SCREEN
-    // 1. JIKA GAME SELESAI -> TAMPILKAN END SCREEN FULL SCREEN
-if (isFinished) {
-    return (
-        <div className="level3-body end-screen-fullscreen">
-            {/* Gambar Banner End Screen Utama */}
-            <img 
-                src="/images/endscreen.png" 
-                alt="Level Completed" 
-                className="end-banner-img-full" 
-            />
+    // 1. END SCREEN (GAMEPLAY SELESAI)
+    if (isFinished) {
+        return (
+            <div className="level3-body end-screen-fullscreen">
+                <img 
+                    src="/images/endscreen.png" 
+                    alt="Level Completed" 
+                    className="end-banner-img-full" 
+                />
 
-            {/* Tombol Aksi */}
-            <div className="end-actions-full">
-                {/* Tombol Back ke Dashboard */}
-                <button 
-                    type="button" 
-                    className="end-btn" 
-                    onClick={onBackToDashboard}
-                    aria-label="Kembali ke Dashboard"
-                >
-                    <img src="/images/back.PNG" alt="Kembali" className="end-btn-icon" />
-                </button>
+                <div className="end-actions-full">
+                    <button 
+                        type="button" 
+                        className="end-btn" 
+                        onClick={onBackToDashboard}
+                        aria-label="Kembali ke Dashboard"
+                    >
+                        <img src="/images/back.PNG" alt="Kembali" className="end-btn-icon" />
+                    </button>
 
-                {/* Tombol Main Lagi */}
-                <button 
-                    type="button" 
-                    className="end-btn" 
-                    onClick={handleRestart}
-                    aria-label="Main Lagi"
-                >
-                    <img src="/images/replay.png" alt="Main Lagi" className="end-btn-icon" />
-                </button>
+                    <button 
+                        type="button" 
+                        className="end-btn" 
+                        onClick={handleRestart}
+                        aria-label="Main Lagi"
+                    >
+                        <img src="/images/replay.png" alt="Main Lagi" className="end-btn-icon" />
+                    </button>
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
 
-    // 2. JIKA BELUM SELESAI -> TAMPILKAN GAMEPLAY UTAMA
+    // 2. TAMPILAN GAMEPLAY UTAMA
     return (
         <div className="level3-body">
             <main className="game-shell">
@@ -193,12 +210,12 @@ if (isFinished) {
                 <section className="layout">
                     <div className="left">
                         <div className="target-image">
-                            <img src={currentQuestion?.image} alt={currentQuestion?.label} />
+                            <img src={currentQuestion?.image} alt={currentQuestion?.label || 'Target'} />
                         </div>
                     </div>
 
                     <div className="right">
-                        <div className="letters" >
+                        <div className="letters">
                             {currentOrder.map((letter, idx) => (
                                 <button
                                     key={idx}

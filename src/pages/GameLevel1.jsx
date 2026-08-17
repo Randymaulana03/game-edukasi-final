@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { letters } from '../data/letters';
 import { playLetterSound } from '../core/AudioManager';
 import './GameLevel1.css';
 
-// Palette warna background & teks presisi 26 huruf
+// Palette warna background & teks presisi 26 huruf (Statis di luar komponen)
 const LETTER_COLORS = [
   { bg: '#ff7675', text: '#d63031' }, // Aa
   { bg: '#8c7ae6', text: '#bae776' }, // Bb
@@ -33,23 +33,42 @@ const LETTER_COLORS = [
   { bg: '#ff4757', text: '#2ed573' }, // Zz
 ];
 
+const DEFAULT_COLOR = { bg: '#ff7675', text: '#ffffff' };
+
 export default function GameLevel1({ onBackToDashboard }) {
   const [activeLetter, setActiveLetter] = useState(null);
+  const activeTimerRef = useRef(null);
 
-  const playAudio = (letter) => {
+  // Memoisasi list alfabet dari data huruf
+  const alphabetList = useMemo(() => Object.keys(letters), []);
+
+  // Cleanup Timer saat Unmount
+  useEffect(() => {
+    return () => {
+      if (activeTimerRef.current) {
+        clearTimeout(activeTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Handler Play Audio + Visual Feedback
+  const playAudio = useCallback((letter) => {
     setActiveLetter(letter);
+
     try {
       playLetterSound(letter);
     } catch (err) {
-      console.error('Gagal memutar suara huruf:', err);
+      console.warn('Gagal memutar suara huruf:', err);
     }
 
-    setTimeout(() => {
+    if (activeTimerRef.current) {
+      clearTimeout(activeTimerRef.current);
+    }
+
+    activeTimerRef.current = setTimeout(() => {
       setActiveLetter(null);
     }, 200);
-  };
-
-  const alphabetList = Object.keys(letters);
+  }, []);
 
   return (
     <div className="level1-body">
@@ -78,7 +97,7 @@ export default function GameLevel1({ onBackToDashboard }) {
         <section className="letters-grid">
           {alphabetList.map((char, index) => {
             const displayChar = `${char.toUpperCase()}${char.toLowerCase()}`;
-            const color = LETTER_COLORS[index] || { bg: '#ff7675', text: '#ffffff' };
+            const color = LETTER_COLORS[index] || DEFAULT_COLOR;
 
             return (
               <button

@@ -1,6 +1,9 @@
-/* 1. CONTAINER UTAMA & DEKLARASI WARNA SHADOW PER LEVEL */
+/* ============================================================
+   1. CONTAINER UTAMA & DEKLARASI WARNA SHADOW PER LEVEL
+   ============================================================ */
 .stage {
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -10,17 +13,23 @@
                     url('/images/cover.jpeg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  /* background-attachment: fixed Dihapus untuk cegah lag scroll di mobile */
+  background-repeat: no-repeat;
   padding: 20px;
   text-align: center;
   overflow: hidden;
   font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+  box-sizing: border-box;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  contain: content; /* Isolasi rendering untuk efisiensi GPU */
 
   /* Default Shadow (Level 1) */
   --shadow-color: #b2e000;
 }
 
-/* Mengubah variabel warna shadow berdasarkan level */
+/* Variable Shadow Warna berdasarkan Level */
 .stage.level-1 {
   --shadow-color: #b2e000;
 }
@@ -33,7 +42,9 @@
   --shadow-color: #c70054;
 }
 
-/* 3. DESAIN PILL GENERAL (Box Shadow Menggunakan Variabel Dynamic) */
+/* ============================================================
+   2. DESAIN PILL GENERAL
+   ============================================================ */
 .pill {
   width: 90%;
   border-radius: 999px;
@@ -42,17 +53,21 @@
   margin-bottom: 16px;
   z-index: 2;
   box-shadow: 0 10px 0 var(--shadow-color), 0 14px 24px rgba(0, 0, 0, 0.18) !important;
+  transform: translateZ(0); /* Force GPU acceleration */
+  will-change: transform;
 }
 
-/* 4. PILL LEVEL (Background Berubah Sesuai Level) */
+/* ============================================================
+   3. PILL LEVEL (Background Berubah Sesuai Level)
+   ============================================================ */
 .pill.level {
   max-width: 420px !important;
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
   font-weight: 900 !important;
   font-style: normal !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
-  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+  font-size: clamp(1.8rem, 5vw, 3.5rem) !important;
   padding: 18px 30px !important;
 }
 
@@ -71,7 +86,9 @@
   color: #ffffff !important;
 }
 
-/* 5. PILL TOPIC (Background Putih, Shadow Otomatis Mengikut Variabel Level) */
+/* ============================================================
+   4. PILL TOPIC
+   ============================================================ */
 .pill.topic {
   max-width: 680px !important;
   font-family: Georgia, "Times New Roman", serif !important;
@@ -84,15 +101,18 @@
   color: var(--text-purple, #4a0e78) !important;
 }
 
-/* 6. HINT / TIMER */
+/* ============================================================
+   5. HINT / TIMER (Tanpa Backdrop Blur)
+   ============================================================ */
 .hint {
   margin-top: 8px;
   color: #ffffff;
   font-family: "Trebuchet MS", "Comic Sans MS", sans-serif !important;
   font-size: clamp(0.9rem, 2.2vw, 1rem) !important;
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.55); /* Diperpekat sebagai pengganti blur */
+  padding: 8px 18px;
   border-radius: 999px;
-  backdrop-filter: blur(6px);
+  z-index: 2;
+  display: inline-block;
 }
