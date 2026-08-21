@@ -15,6 +15,8 @@ export const wordsLevel3 = Object.freeze([
   { id: 10, label: "Jeruk", answer: "JERUK", image: "/images/jeruk.png" },
   { id: 11, label: "Leci", answer: "LECI", image: "/images/leci.png" },
   { id: 12, label: "Melon", answer: "MELON", image: "/images/melon.png" },
+  { id: 13, label: "Kiwi", answer: "KIWI", image: "/images/kiwi.png" },
+
 ]);
 
 /**
