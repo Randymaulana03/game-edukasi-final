@@ -1,18 +1,17 @@
 /* ============================================================
-   GameLevel1.css - OPTIMIZED FOR 60FPS PERFORMANCE
+   GameLevel1.css - FIXED SCALING & RATIO ON ZOOM
    ============================================================ */
 
-/* 1. RESET UTAMA CONTAINER & BACKGROUND OPTIMIZATION */
+/* 1. CONTAINER & BACKGROUND */
 .level1-body {
   width: 100vw;
-  height: 100vh;
   height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 12px;
   box-sizing: border-box;
-  overflow: hidden; /* Mencegah scrollbar muncul */
+  overflow: hidden;
 
   background-image: url('/images/background1.jpg') !important;
   background-size: cover !important;
@@ -23,19 +22,15 @@
   -webkit-user-select: none;
 }
 
+/* 2. GAME WRAPPER (Kunci Proporsi & Container Query) */
 .game-wrap {
-  /* KUNCI: Lebar selalu 100% viewport dikurangi total jarak kiri-kanan (misal 60px = 30px kiri + 30px kanan) */
-  width: calc(100vw - 60px) !important;
-  min-width: calc(100vw - 60px) !important;
-  max-width: calc(100vw - 60px) !important;
-  
-  /* Untuk tinggi tetap fleksibel mengikuti layar */
-  height: calc(100vh - 24px);
-  max-height: calc(100vh - 24px);
+  width: min(calc(100vw - 40px), 1100px) !important;
+  height: calc(100dvh - 30px);
+  max-height: calc(100dvh - 30px);
   
   background: rgba(255, 255, 255, 0.41);
   border-radius: 20px;
-  padding: 8px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,6 +41,8 @@
   overflow: hidden;
   flex-shrink: 0;
 
+  /* Menjadikan game-wrap sebagai konteks ukuran untuk elemen di dalamnya */
+  container-type: size;
 }
 
 /* 3. HEADER & TOMBOL BACK */
@@ -54,35 +51,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: 6px;
   width: 100%;
   flex-shrink: 0;
 }
 
 .home-btn-img {
   position: absolute;
-  top: -9px;
-  right: 100px;
+  top: 0;
+  right: 15px;
   background: transparent !important;
   border: none !important;
   cursor: pointer;
   z-index: 10;
   padding: 0 !important;
-  /* GPU Layer Acceleration untuk animasi tombol */
   will-change: transform;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
 .back-img {
   display: block;
-  width: 90px;
-  height: 90px;
+  /* Menggunakan cqh (container query height) agar proporsional dengan game-wrap */
+  width: clamp(40px, 10cqh, 80px);
+  height: clamp(40px, 10cqh, 80px);
   object-fit: contain;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
 }
 
-/* Hover & Active State Tombol Back */
 .home-btn-img:hover {
   transform: scale(1.08) rotate(-3deg) !important;
 }
@@ -92,45 +87,44 @@
 }
 
 h1 {
-  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-size: clamp(1.2rem, 4cqh, 2.2rem);
   color: #8b1010;
   text-align: center;
   margin: 0;
   font-weight: 800;
   background-color: #fff0f0;
   border-radius: 20px;
-  padding: 8px 24px;
+  padding: 6px 20px;
   box-shadow: 2px 2px 2px #151515;
 }
 
 .status {
-  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  font-size: clamp(0.85rem, 2.5cqh, 1.1rem);
   color: #1d3f19;
   text-align: center;
   margin: 0;
   background-color: #f0fff4;
   border: 2px dashed #2ed573;
   border-radius: 20px;
-  padding: 6px 18px;
+  padding: 4px 16px;
   font-weight: 600;
-
 }
 
 /* 4. GRID SYSTEM (6 KOLOM BARIS A-X) */
 .letters-grid {
   display: grid;
-  width: 100%; /* Memaksa grid selalu memenuhi seluruh lebar game-wrap */
+  width: 100%;
+  height: 100%;
   grid-template-columns: repeat(6, 1fr);
-  gap: 4px 5px;
+  gap: 8px;
   justify-items: center;
   align-items: center;
   flex: 1;
   min-height: 0;
-
-  
+  padding: 10px 0;
 }
 
-/* 5. POSISI Y DAN Z KETENGAH DI BARIS TERAKHIR */
+/* 5. POSISI HURUF Y DAN Z */
 .letter-btn.letter-y {
   grid-column: 3;
 }
@@ -139,10 +133,9 @@ h1 {
   grid-column: 4;
 }
 
-/* 6. STYLING TOMBOL BULAT (OPTIMIZED) */
+/* 6. STYLING TOMBOL BULAT (SKALA PROPORSIONAL) */
 button.letter-btn,
 .letters-grid button.letter-btn {
-
   appearance: none;
   -webkit-appearance: none;
   border: none !important;
@@ -151,26 +144,20 @@ button.letter-btn,
   margin: 0 !important;
   cursor: pointer;
 
-  
   background-color: var(--btn-bg-custom) !important;
   color: var(--btn-text-custom) !important;
 
-  /* Ukuran tombol mengikuti skala tinggi viewport secara dinamis */
-  width: min(120px, 25vh) !important;
-  height: min(120px, 25vh) !important;
-  min-width: unset !important;
-  min-height: unset !important;
-  max-width: 100px !important;
-  max-height: 100px !important;
+  /* Ukuran tombol mengikuti skala kontainer game-wrap secara presisi */
+  width: min(17cqw, 15cqh) !important;
+  height: min(17cqw, 15cqh) !important;
+  aspect-ratio: 1 / 1;
   border-radius: 50% !important;
 
-  
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  flex-shrink: 1 !important;
   
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18) !important;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18) !important;
   touch-action: manipulation;
   will-change: transform;
   transition: transform 0.1s ease, box-shadow 0.1s ease !important;
@@ -179,11 +166,12 @@ button.letter-btn,
   animation: popUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* 7. FORMAT TEKS HURUF (DIBERSIHKAN DARI DUPLIKASI) */
+/* 7. FORMAT TEKS HURUF */
 .letter-text {
   font-family: 'Fredoka', Arial, sans-serif !important;
   font-weight: 1000 !important;
-  font-size: clamp(1.2rem, 3.5vh, 2.2rem) !important; /* Font ikut skala tinggi */
+  /* Font-size fleksibel berdasarkan tinggi tombol/kontainer */
+  font-size: clamp(1rem, 5cqh, 2rem) !important;
   line-height: 1 !important;
   letter-spacing: -1px;
   color: inherit !important;
@@ -191,15 +179,13 @@ button.letter-btn,
   display: flex;
   align-items: center;
   justify-content: center;
-
-
 }
 
-/* 8. HOVER & ACTIVE STATE (INTERAKSI DIBUAT LEBIH RINGAN) */
+/* 8. HOVER & ACTIVE */
 @media (hover: hover) {
   button.letter-btn:hover {
     transform: translate3d(0, -3px, 0) scale(1.03) !important;
-    box-shadow: 0 9px 0 rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 7px 0 rgba(0, 0, 0, 0.15) !important;
   }
 }
 
@@ -209,7 +195,7 @@ button.letter-btn.active {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
-/* 9. ANIMASI ENTRY (ACCELERATED HARDWARE) */
+/* 9. ANIMASI ENTRY */
 @keyframes popUp {
   from { 
     opacity: 0; 
@@ -221,11 +207,11 @@ button.letter-btn.active {
   }
 }
 
-/* 10. RESPONSIVE MOBILE (HP) */
+/* 10. RESPONSIVE MOBILE */
 @media (max-width: 650px) {
   .letters-grid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px 5px;
+    gap: 8px 4px;
   }
 
   .letter-btn.letter-y {
@@ -238,26 +224,15 @@ button.letter-btn.active {
 
   button.letter-btn,
   .letters-grid button.letter-btn {
-
-    width: 68px !important;
-    height: 68px !important;
-    min-width: 68px !important;
-    min-height: 68px !important;
-    max-width: 68px !important;
-    max-height: 68px !important;
-    
+    width: min(17cqw, 15cqh) !important;
+    height: min(17cqw, 15cqh) !important;
   }
 
   .letter-text {
-    font-size: 1.75rem !important;
-  }
-
-  .back-img {
-    width: 50px;
-    height: 50px;
+    font-size: clamp(1rem, 5cqh, 2rem) !important;
   }
 
   .home-btn-img {
-    right: 100px;
+    right: 5px;
   }
 }
