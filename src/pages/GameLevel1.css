@@ -156,12 +156,12 @@ button.letter-btn,
   color: var(--btn-text-custom) !important;
 
   /* Ukuran tombol mengikuti skala tinggi viewport secara dinamis */
-  width: min(122px, 27vh) !important;
-  height: min(122px, 27vh) !important;
+  width: min(120px, 25vh) !important;
+  height: min(120px, 25vh) !important;
   min-width: unset !important;
   min-height: unset !important;
-  max-width: 110px !important;
-  max-height: 110px !important;
+  max-width: 10px !important;
+  max-height: 100px !important;
   border-radius: 50% !important;
 
   
