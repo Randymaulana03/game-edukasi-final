@@ -79,16 +79,16 @@ export default function GameLevel1({ onBackToDashboard }) {
             Klik salah satu huruf untuk mendengarkan suaranya
           </p>
 
-          <button 
+          <button
             type="button"
-            className="home-btn-img" 
+            className="home-btn-img"
             onClick={onBackToDashboard}
             aria-label="Kembali ke Dashboard"
           >
-            <img 
-              src="/images/back.PNG" 
-              alt="Tombol Kembali" 
-              className="back-img" 
+            <img
+              src="/images/back.PNG"
+              alt="Tombol Kembali"
+              className="back-img"
               loading="lazy"
             />
           </button>
@@ -96,7 +96,7 @@ export default function GameLevel1({ onBackToDashboard }) {
 
         <section className="letters-grid">
           {alphabetList.map((char, index) => {
-            const displayChar = `${char.toUpperCase()}${char.toLowerCase()}`;
+            const displayChar = `${char.toUpperCase()} ${char.toLowerCase()}`;
             const color = LETTER_COLORS[index] || DEFAULT_COLOR;
 
             return (
@@ -104,7 +104,7 @@ export default function GameLevel1({ onBackToDashboard }) {
                 key={char}
                 type="button"
                 className={`letter-btn ${activeLetter === char ? 'active' : ''} ${char === 'Y' ? 'letter-y' : ''} ${char === 'Z' ? 'letter-z' : ''}`}
-                style={{ 
+                style={{
                   animationDelay: `${index * 0.02}s`,
                   '--btn-bg-custom': color.bg,
                   '--btn-text-custom': color.text
