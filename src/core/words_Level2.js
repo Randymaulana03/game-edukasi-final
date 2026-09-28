@@ -3,8 +3,8 @@ const FILLER_LETTERS = Array.from('CEFGHIKLMNOPQRSTVWXYZ');
 
 const ORIENTATION_GROUPS = Object.freeze({
   horizontal: [
-    // [0, 1],  // Kiri -> Kanan
-    [0, -1]  // Kanan -> Kiri
+    [0, 1],  // Kiri -> Kanan
+    // [0, -1]  // Kanan -> Kiri
   ],
   vertical: [
     [1, 0]   // Atas -> Bawah
